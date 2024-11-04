@@ -1,0 +1,18 @@
+
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<h1>Sign In</h1>
+
+<form method="POST" action="{% url "signin" %}">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button>Login</button>
+</form>
+
+{% for error in errors %}
+  <h3 style="color:red;">{{error.message}}</h3>
+{% endfor %}
+
+{% endblock content %}
