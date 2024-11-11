@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from .forms import TaskForm
+from .models import Task
 # Create your views here.
 
 def home(request):
@@ -47,7 +48,29 @@ def signup(request):
   return redirect('tasks')
 
 def tasks(request):
-  return render(request, 'tasks/tasks.html')
+  user = request.user
+  tasks =  Task.objects.filter(user=user, datecompleted__isnull=True)
+  return render(request, 'tasks/tasks.html', {
+    'tasks': tasks
+  })
+def task(request, id):
+  if(request.method == 'GET'):
+    task = get_object_or_404(Task, pk=id)
+    form = TaskForm(instance=task)
+    # tasks =  Task.objects.filter(user=user, datecompleted__isnull=True)
+    return render(request, 'tasks/task.html', {
+      'task': task,
+      'form': form
+    })
+  try:
+    task = get_object_or_404(Task, pk=id)
+    form = TaskForm(request.POST, instance=task)
+    form.save()
+    return redirect('tasks')
+  except ValueError:
+    return render(request, 'tasks/create-task.html', {
+      'form': TaskForm
+    } )
 def signout(request):
   logout(request)
   return redirect('home')
@@ -80,6 +103,24 @@ def signin(request):
 # def login(request, user, password):
   
 def createTask(request):
-  return render(request, 'tasks/create-task.html',{
-    'form': TaskForm
-  })
+  if(request.method=='GET'):
+    return render(request, 'tasks/create-task.html',{
+      'form': TaskForm
+    })
+  # title = request.POST.get('title')
+  # description = request.POST.get('description')
+  # important = request.POST.get('important')
+  
+  try:
+    form = TaskForm(request.POST)
+    new_task = form.save(commit=False)
+    user = request.user
+    new_task.user = user
+    new_task.save()
+    print(new_task)
+    return redirect('tasks')
+  except ValueError:
+    return render(request, 'tasks/create-task.html', {
+      'form': TaskForm
+    } )
+  
