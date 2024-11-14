@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from .forms import TaskForm
 from .models import Task
@@ -48,18 +49,21 @@ def signup(request):
   # login(request, user)
   return redirect('tasks')
 
+@login_required
 def tasks(request):
   user = request.user
   tasks =  Task.objects.filter(user=user, datecompleted__isnull=True)
   return render(request, 'tasks/tasks.html', {
     'tasks': tasks
   })
+@login_required
 def tasksCompleted(request):
   user = request.user
   tasks =  Task.objects.filter(user=user, datecompleted__isnull=False).order_by('-datecompleted')
   return render(request, 'tasks/tasks.html', {
     'tasks': tasks
   })
+@login_required
 def task(request, id):
   print(request.user)
   if(request.method == 'GET'):
@@ -81,6 +85,7 @@ def task(request, id):
       'form': form,
       'error': 'Error Updating Task'
     })
+@login_required
 def signout(request):
   logout(request)
   return redirect('home')
@@ -111,7 +116,7 @@ def signin(request):
   return redirect('tasks')
 
 # def login(request, user, password):
-  
+@login_required
 def createTask(request):
   if(request.method=='GET'):
     return render(request, 'tasks/create-task.html',{
@@ -133,12 +138,14 @@ def createTask(request):
     return render(request, 'tasks/create-task.html', {
       'form': TaskForm
     } )
+@login_required
 def completeTask(request, id):
   task = get_object_or_404(Task, pk=id, user=request.user)
   if(request.method=='POST'):
     task.datecompleted = timezone.now()
     task.save()
     return redirect('tasks')
+@login_required
 def deleteTask(request, id):
   task = get_object_or_404(Task, pk=id, user=request.user)
   if(request.method=='POST'):
