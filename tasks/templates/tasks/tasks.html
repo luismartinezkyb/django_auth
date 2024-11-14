@@ -6,23 +6,30 @@
 <main class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <h1>Tasks</h1>
+            
 
-            <a href="{% url "create-task" %}">Crear tarea</a>
+            {% if taskcompleted %}
+                <h1 class="text-center display-3 py-5">Tasks Completed</h1>
+            {% else %}
+                <h1 class="text-center display-3 py-5">Tasks</h1>
+                <a class="btn btn-primary text-center mb-4" href="{% url "create-task" %}">Crear tarea</a>
+            {% endif %}
             
             <ul class="list-group">
             {% for task in tasks %}
-                <a href="{{task.id}}" style="cursor:pointer;" class="list-group-item" >
+                <a href="{{task.id}}" style="cursor:pointer; {% if task.important %}background-color:red; color:white;{% endif %}"  class="list-group-item" >
                    
-                    <h1 style="text-decoration: underline;">{{task.title}}</h1>
+                    <header class="d-flex justify-content-between">
+                        <h1 class="fw-bold" style="text-decoration: underline;">{{task.title}}</h1>
+                        
+                        <p>Made by: {{task.user.username}}</p>
+                        {% comment %} {% if task.important %}
+                        <p style="color:red;">Urgent</p>
+                        {% else %}
+                        <p>No importante</p>
+                        {% endif %} {% endcomment %}
+                    </header>
                     <p>{{task.description}}</p>
-                    <p>Made by: {{task.user.username}}</p>
-                    {% if task.important %}
-                    <p style="color:red;">Urgent</p>
-                    {% else %}
-                    <p>No importante</p>
-                    {% endif %}
-                    
                     <p>{{task.datecompleted|date:'M j Y:i'}}</p>
                     
                 </a>

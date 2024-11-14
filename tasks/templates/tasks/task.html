@@ -4,21 +4,29 @@
 {% block content %}
 
 {{error}}
-<h1>Task {{task.title}}</h1>
 
-<form method="POST">
-  {% csrf_token %}
-  {{form.as_p}}
-  <button>Update</button>
-</form>
+<main class="container">
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+          <h1 class="text-center text-secondary">Task {{task.title}}</h1>
+          <form method="POST" class="card card-body mt-5">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button class="btn btn-primary">Update</button>
+          </form>
 
+          <div class="d-flex justify-content-between mt-4">
+            <form  method="POST" action="{% url "complete-task" task.id %}">
+              {% csrf_token %}
+              <button class="btn btn-success">Complete Task</button>
+            </form>
+            <form method="POST" action="{% url "delete-task" task.id %}">
+              {% csrf_token %}
+              <button class="btn btn-danger">Delete Task</button>
+            </form>
+          </div>
+    </div>
+  </div>
+</main>
 
-<form style="margin-top: 10px" method="POST" action="{% url "complete-task" task.id %}">
-  {% csrf_token %}
-  <button>Complete Task</button>
-</form>
-<form style="margin-top: 10px" method="POST" action="{% url "delete-task" task.id %}">
-  {% csrf_token %}
-  <button>Delete Task</button>
-</form>
 {% endblock content %}

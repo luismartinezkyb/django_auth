@@ -61,6 +61,7 @@ def tasksCompleted(request):
   user = request.user
   tasks =  Task.objects.filter(user=user, datecompleted__isnull=False).order_by('-datecompleted')
   return render(request, 'tasks/tasks.html', {
+    'taskcompleted': 2,
     'tasks': tasks
   })
 @login_required
