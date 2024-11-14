@@ -2,11 +2,23 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
+
+{{error}}
 <h1>Task {{task.title}}</h1>
 
 <form method="POST">
   {% csrf_token %}
   {{form.as_p}}
   <button>Update</button>
+</form>
+
+
+<form style="margin-top: 10px" method="POST" action="{% url "complete-task" task.id %}">
+  {% csrf_token %}
+  <button>Complete Task</button>
+</form>
+<form style="margin-top: 10px" method="POST" action="{% url "delete-task" task.id %}">
+  {% csrf_token %}
+  <button>Delete Task</button>
 </form>
 {% endblock content %}

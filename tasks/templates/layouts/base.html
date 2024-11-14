@@ -21,6 +21,9 @@
         <li>
           <a href="{% url "tasks" %}">Tasks</a>
         </li>
+        <li>
+          <a href="{% url "tasks-completed" %}">Tasks Completed</a>
+        </li>
         
 
         {% if user.is_authenticated %}

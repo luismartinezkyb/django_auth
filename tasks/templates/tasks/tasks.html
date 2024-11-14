@@ -4,6 +4,7 @@
 {% block content %}
 <h1>Tasks</h1>
 
+<a href="{% url "create-task" %}">Crear tarea</a>
 
 <ul>
 {% for task in tasks %}
@@ -19,6 +20,7 @@
     <p>No importante</p>
     {% endif %}
     
+    <p>{{task.datecompleted|date:'M j Y:i'}}</p>
     <hr>
 </li>
 {% endfor %}

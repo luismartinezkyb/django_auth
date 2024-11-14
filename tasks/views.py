@@ -6,6 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from .forms import TaskForm
 from .models import Task
+from django.utils import timezone
 # Create your views here.
 
 def home(request):
@@ -53,9 +54,16 @@ def tasks(request):
   return render(request, 'tasks/tasks.html', {
     'tasks': tasks
   })
+def tasksCompleted(request):
+  user = request.user
+  tasks =  Task.objects.filter(user=user, datecompleted__isnull=False).order_by('-datecompleted')
+  return render(request, 'tasks/tasks.html', {
+    'tasks': tasks
+  })
 def task(request, id):
+  print(request.user)
   if(request.method == 'GET'):
-    task = get_object_or_404(Task, pk=id)
+    task = get_object_or_404(Task, pk=id,user=request.user)
     form = TaskForm(instance=task)
     # tasks =  Task.objects.filter(user=user, datecompleted__isnull=True)
     return render(request, 'tasks/task.html', {
@@ -63,14 +71,16 @@ def task(request, id):
       'form': form
     })
   try:
-    task = get_object_or_404(Task, pk=id)
+    task = get_object_or_404(Task, pk=id, user=request.user)
     form = TaskForm(request.POST, instance=task)
     form.save()
     return redirect('tasks')
   except ValueError:
-    return render(request, 'tasks/create-task.html', {
-      'form': TaskForm
-    } )
+    return render(request, 'tasks/task.html', {
+      'task': task,
+      'form': form,
+      'error': 'Error Updating Task'
+    })
 def signout(request):
   logout(request)
   return redirect('home')
@@ -123,4 +133,15 @@ def createTask(request):
     return render(request, 'tasks/create-task.html', {
       'form': TaskForm
     } )
-  
+def completeTask(request, id):
+  task = get_object_or_404(Task, pk=id, user=request.user)
+  if(request.method=='POST'):
+    task.datecompleted = timezone.now()
+    task.save()
+    return redirect('tasks')
+def deleteTask(request, id):
+  task = get_object_or_404(Task, pk=id, user=request.user)
+  if(request.method=='POST'):
+    task.delete()
+    return redirect('tasks')
+    
