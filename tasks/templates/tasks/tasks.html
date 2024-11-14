@@ -2,28 +2,35 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<h1>Tasks</h1>
 
-<a href="{% url "create-task" %}">Crear tarea</a>
+<main class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1>Tasks</h1>
 
-<ul>
-{% for task in tasks %}
-<li >
-    <a style="text-decoration: underline;" href="{{task.id}}">
-        <h1>{{task.title}}</h1>
-    </a>
-    <p>{{task.description}}</p>
-    <p>Made by: {{task.user.username}}</p>
-    {% if task.important %}
-    <p style="color:red;">Urgent</p>
-    {% else %}
-    <p>No importante</p>
-    {% endif %}
-    
-    <p>{{task.datecompleted|date:'M j Y:i'}}</p>
-    <hr>
-</li>
-{% endfor %}
-</ul>
+            <a href="{% url "create-task" %}">Crear tarea</a>
+            
+            <ul class="list-group">
+            {% for task in tasks %}
+                <a href="{{task.id}}" style="cursor:pointer;" class="list-group-item" >
+                   
+                    <h1 style="text-decoration: underline;">{{task.title}}</h1>
+                    <p>{{task.description}}</p>
+                    <p>Made by: {{task.user.username}}</p>
+                    {% if task.important %}
+                    <p style="color:red;">Urgent</p>
+                    {% else %}
+                    <p>No importante</p>
+                    {% endif %}
+                    
+                    <p>{{task.datecompleted|date:'M j Y:i'}}</p>
+                    
+                </a>
+                <hr>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+</main>
 
 {% endblock content %}

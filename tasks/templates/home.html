@@ -2,6 +2,15 @@
 
 {% block content %}
 
-<h1>Home</h1>
+<main class="container py-5">
+    <section class="card card-body">
+        <h1 class="display-1 text-center">Django App</h1>
+        <p>{% lorem 4 %}</p>
+        <div class="text-center">
+            <a class="btn btn-primary" href="{% url "signin" %}">SignIn</a>
+            <a class="btn btn-dark" href="{% url "signup" %}">Sign Up</a>
+        </div>
+    </section>
+</main>
 
 {% endblock content %}

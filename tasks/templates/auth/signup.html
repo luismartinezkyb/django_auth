@@ -3,13 +3,33 @@
 
 {% block content %}
 
-<h1>Signup</h1>
 
-<form method="POST" action="{% url "signup" %}">
-  {% csrf_token %}
-  {{form.as_p}}
-  <button>Signup</button>
-</form>
+
+<main class="container">
+  <div class="row">
+    <div class="col-md-4 offset-md-4 mt-5">
+      <form method="POST" action="{% url "signup" %}" class="card card-body form-control">
+        <h1 class="text-center">Signup</h1>
+        {{error}}
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="username" class="">Username:</label>
+          <input id="name" type="text" name="username" class="form-control" placeholder="write your username">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="">Password:</label>
+          <input id="password1" type="password" name="password1" class="form-control" placeholder="write your password">
+        </div>
+        <div class="mb-3">
+          <label for="password2" class="">Password confirmation:</label>
+          <input id="password2" type="password" name="password2" class="form-control" placeholder="Confirm your password">
+        </div>
+        <button class="btn btn-primary">Signup</button>
+      </form>
+    </div>
+  </div>
+  
+</main>
 
 {% for error in errors %}
   <h3 style="color:red;">{{error.message}}</h3>
